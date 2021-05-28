@@ -11,8 +11,8 @@ public class Main {
 
         int ncases = Integer.parseInt(in.readLine());
 
-        int[] johnScores = new int[ncases];
-        int[] kateScores = new int[ncases];
+        String[] johnScores = new String[ncases];
+        String[] kateScores = new String[ncases];
 
         for(int i=0; i<ncases; i++) {
             String[] line = in.readLine().split(" ");
@@ -22,9 +22,9 @@ public class Main {
 
             char[][] island = new char[lines][columns];
             for(int l=0; l<lines; l++) {
-                line = in.readLine().split(" ");
+                String line2 = in.readLine();
                 for(int c=0; c<columns; c++) {
-                    island[l][c] = line[c].charAt(0);
+                    island[l][c] = line2.charAt(c);
                 }
             }
 
@@ -43,16 +43,69 @@ public class Main {
             int katePosY = Integer.parseInt(line[3]);
 
             Lost problem = new Lost(island, wheels, johnPosX, johnPosY, katePosX, katePosY);
-            int[] solution = problem.solve();
+            String[] solution = problem.solve();
 
             johnScores[i] = solution[0];
             kateScores[i] = solution[1];
         }
 
         for(int i=0; i<ncases; i++) {
-            System.out.println("Case #" + i);
+            System.out.println("Case #" + (i+1));
             System.out.println("John " + johnScores[i]);
             System.out.println("Kate " + kateScores[i]);
         }
     }
 }
+
+/*
+
+1
+3 3 0
+XWW
+WWW
+WWW
+0 0 0 0
+
+1
+3 4 2
+2WW1
+GOOO
+GGXO
+0 0 0
+0 3 0
+0 3 0 3
+
+4
+6 5 1
+WWWWW
+WGG1W
+WGOGW
+WGOGW
+WGXGW
+WWWWW
+4 2 -4
+1 1 1 2
+5 5 0
+WWWWW
+WGGXW
+WGOGW
+WGOGW
+WWWWW
+3 1 3 1
+5 5 0
+WWWWW
+WGOGW
+WOOGW
+WGGXW
+WWWWW
+1 1 1 1
+5 5 1
+WWWWW
+W1GGW
+WGGGW
+WGGXW
+WWWWW
+1 2 -3
+1 2 2 1
+
+ */

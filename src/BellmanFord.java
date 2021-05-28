@@ -1,63 +1,50 @@
+import java.util.List;
 
 public class BellmanFord {
 
     public int nVertices, nEdges;
-    public Edge[] edges;
+    public List<Edge> edges;
 
-    public BellmanFord(Edge[] edges, int nVertices, int nEdges)
+    public BellmanFord(List<Edge> edges, int nVertices)
     {
         this.nVertices = nVertices;
-        this.nEdges = nEdges;
+        this.nEdges = edges.size();
         this.edges = edges;
     }
 
-    // The main function that finds shortest distances from src
-    // to all other vertices using Bellman-Ford algorithm. The
-    // function also detects negative weight cycle
-    void findShortestDistancesFrom(int src)
+    public String findShortestDistancesFrom(Integer source, Integer destination)
     {
-        int dist[] = new int[nVertices];
+        if(source == null || destination == null)
+            return "Unreachable";
 
-        // Step 1: Initialize distances from src to all other
-        // vertices as INFINITE
-        for (int i = 0; i < nVertices; ++i)
-            dist[i] = Integer.MAX_VALUE;
-        dist[src] = 0;
+        int[] distances = new int[nVertices];
 
-        // Step 2: Relax all edges |V| - 1 times. A simple
-        // shortest path from src to any other vertex can
-        // have at-most |V| - 1 edges
-        for (int i = 1; i < nVertices; ++i) {
-            for (int j = 0; j < nEdges; ++j) {
-                int u = edges[j].src;
-                int v = edges[j].dest;
-                int weight = edges[j].weight;
-                if (dist[u] != Integer.MAX_VALUE && dist[u] + weight < dist[v])
-                    dist[v] = dist[u] + weight;
+        for (int i = 0; i < nVertices; i++)
+            distances[i] = Integer.MAX_VALUE;
+        distances[source] = 0;
+
+        for (int i = 1; i < nVertices; i++) {
+            boolean noChanges = true;
+            for (int j = 0; j < nEdges; j++) {
+                Edge edge = edges.get(j);
+                if (distances[edge.src] != Integer.MAX_VALUE && distances[edge.src] + edge.weight < distances[edge.dest]) {
+                    noChanges = false;
+                    distances[edge.dest] = distances[edge.src] + edge.weight;
+                }
             }
+            if(noChanges) break;
         }
 
-        // Step 3: check for negative-weight cycles. The above
-        // step guarantees shortest distances if graph doesn't
-        // contain negative weight cycle. If we get a shorter
-        // path, then there is a cycle.
         for (int j = 0; j < nEdges; ++j) {
-            int u = edges[j].src;
-            int v = edges[j].dest;
-            int weight = edges[j].weight;
-            if (dist[u] != Integer.MAX_VALUE && dist[u] + weight < dist[v]) {
-                System.out.println("Graph contains negative weight cycle");
-                return;
+            Edge edge = edges.get(j);
+            if (distances[edge.src] != Integer.MAX_VALUE && distances[edge.src] + edge.weight < distances[edge.dest]) {
+                return "Lost in Time";
             }
         }
-        printArr(dist, nVertices);
-    }
 
-    // A utility function used to print the solution
-    void printArr(int dist[], int V)
-    {
-        System.out.println("Vertex Distance from Source");
-        for (int i = 0; i < V; ++i)
-            System.out.println(i + "\t\t" + dist[i]);
+        if(distances[destination]==Integer.MAX_VALUE)
+            return "Unreachable";
+
+        return String.valueOf(distances[destination]);
     }
 }
